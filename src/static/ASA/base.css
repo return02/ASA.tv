@@ -1,0 +1,35 @@
+.top-container {
+  width: 100%;
+  height: 150px;
+}
+
+.top-container-tab {
+  position: absolute;
+  z-index: 100;
+  margin-top: 1px;
+}
+
+.top-container-tab-href {
+  font-size: 15px;
+}
+
+.top-container-pic {
+  position: absolute;
+  z-index:1;
+}
+
+.top-container-userinfo {
+  top: 5px;
+  right: 10px;
+  width: 100px;
+  position: absolute;
+  z-index: 100;
+  font-size: 12px;
+}
+
+.top-container-avatar {
+  height: 20;
+  width: 20;
+  position: absolute;
+  right: 5px;
+}
