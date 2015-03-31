@@ -15,16 +15,21 @@ var Uploader;
     // default settings
 		if (typeof onStatusChange != "function") onStatusChange=function(obj){};
     if (typeof callback != "function") callback=function(){};
+    console.log(config);
     if (config == null)
       var config = {};
+    console.log(config);
     config['size'] = file.size;
-    if (typeof(config['url']) != undefined)
+    if (typeof(config['url']) == "undefined")
       config["url"] = window.location.origin+"/";
-    if (typeof(config['collection']) != undefined)
+    if (typeof(config['collection']) == "undefined")
       config['collection'] = ['test'];
-    if (typeof(config['chunksize']) != undefined)
-      config['chunksize'] = 65536;
-    if (typeof(config['filename']) != undefined)
+    if (typeof(config['chunksize']) == "undefined") {
+    	if (typeof window.chunksize != "undefined") {
+		    config['chunksize'] = window.chunksize;
+		} else config['chunksize'] = 65536;
+	}
+    if (typeof(config['filename']) == "undefined")
       config['filename'] = file.name; 
 
 		/* make ajax */
@@ -82,10 +87,10 @@ var Uploader;
 					reader.onload=function() {
 						checksumprog=pos/file.size*100;
 						onStatusChange(obj);
-						sha256_update(this.result, thischunk);
+						sha256_update(new Uint8Array(this.result), thischunk);
 						resolve(pos+thischunk);
 					};
-					reader.readAsBinaryString(file.slice(pos, pos+thischunk));
+					reader.readAsArrayBuffer(file.slice(pos, pos+thischunk));
 				});
 			});
 		}
@@ -97,7 +102,10 @@ var Uploader;
 			onStatusChange(obj);
 		})
 		/* get token from sessions && return last seq */
-		.then(function(){return ajax("GET", config.url+"upload/session/");})
+		.then(function(){
+      console.log(config.url+"upload/session/");
+      return ajax("GET", config.url+"upload/session/");
+    })
 		.then(parseJSON)
 		.then(function(sessions){
 			var f=0;
@@ -142,7 +150,7 @@ var Uploader;
 						var reader = new FileReader();
 						reader.onload=function(e) {
 							onStatusChange(obj);
-							var data = String.fromCharCode.apply(null, new Uint8Array(this.result));
+							var data = new Uint8Array(this.result);
 							var hash=sha256_digest(data);
 							ajax("PUT", config.url+"upload/chunk/"+token+"/?hash="+hash+"&seq="+seq, this.result, {
 								"Content-Type": "application/x-www-form-urlencoded"

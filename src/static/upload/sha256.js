@@ -173,14 +173,14 @@ function sha256_update(data, inputLen) {
 	/* Transform as many times as possible */
 	for(i=0; i+63<inputLen; i+=64) {
                 for(var j=index; j<64; j++)
-			buffer[j] = data.charCodeAt(curpos++);
+			buffer[j] = data[curpos++] | 0;
 		sha256_transform();
 		index = 0;
 	}
 
 	/* Buffer remaining input */
 	for(var j=0; j<remainder; j++)
-		buffer[j] = data.charCodeAt(curpos++);
+		buffer[j] = data[curpos++] | 0;
 }
 
 /* Finish the computation by operations such as padding */
